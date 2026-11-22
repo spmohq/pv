@@ -1,0 +1,344 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Product Details Extractor</title>
+
+  <link rel="icon" href="spm.ico">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-gradient-start: #020617;
+      --bg-gradient-end: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.4);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent-primary: #22d3ee;
+      --accent-hover: #67e8f9;
+      --accent-success: #10b981;
+      --accent-danger: #f43f5e;
+      --code-bg: rgba(0, 0, 0, 0.3);
+      --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: fixed linear-gradient(
+        135deg,
+        var(--bg-gradient-start),
+        var(--bg-gradient-end)
+      );
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: 60px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: #fff;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .sub-header {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .prompt-workflow {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .step-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 35px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+    }
+
+    .step-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .step-label {
+      font-weight: 800;
+      font-size: 0.8rem;
+      background: var(--accent-primary);
+      color: #020617;
+      padding: 5px 16px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .prompt-content {
+      background: var(--code-bg);
+      padding: 25px;
+      border-radius: 12px;
+      font-family: 'Source Code Pro', monospace;
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+      border: 1px solid rgba(255,255,255,0.05);
+      margin-bottom: 22px;
+      line-height: 1.7;
+      word-break: break-word;
+      max-height: 650px;
+      overflow-y: auto;
+    }
+
+    .prompt-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .prompt-content::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+    }
+
+    .prompt-content::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 4px;
+    }
+
+    .btn {
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s;
+      width: 100%;
+      text-decoration: none;
+      border: none;
+    }
+
+    .copy-btn {
+      background: rgba(34, 211, 238, 0.1);
+      color: var(--accent-primary);
+      border: 1px solid var(--accent-primary);
+    }
+
+    .copy-btn:hover {
+      background: var(--accent-primary);
+      color: #020617;
+    }
+
+    .copy-btn.copied {
+      background: var(--accent-success);
+      border-color: var(--accent-success);
+      color: white;
+    }
+
+    .footer {
+      margin-top: 80px;
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--card-border);
+      padding-top: 40px;
+      width: 100%;
+      padding-bottom: 40px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 40px 15px;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .sub-header {
+        font-size: 1rem;
+      }
+
+      .step-card {
+        padding: 22px;
+      }
+
+      .prompt-content {
+        font-size: 0.85rem;
+        padding: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>Product Details Extractor</h1>
+      <p class="sub-header">(for digital products)</p>
+    </header>
+
+    <div class="prompt-workflow">
+
+      <!-- Prompt 1 -->
+
+      <div class="step-card">
+
+        <div class="step-header">
+          <span class="step-label">Prompt #1</span>
+        </div>
+
+        <div class="prompt-content" id="prompt1">আপলোড করা ফাইলটি ভালোভাবে রিভিউ করো। এটি একটি ডিজিটাল প্রোডাক্ট, যা আমি বিক্রি করতে চাই।
+
+তোমার রিভিউয়ের মূল উদ্দেশ্য হলো, পণ্যটির প্রকৃত বৈশিষ্ট্য, কী কী অন্তর্ভুক্ত রয়েছে, মূল্য এবং ক্রেতার জন্য এর বাস্তব উপকারিতাগুলি চিহ্নিত করা। এই তথ্যগুলি এমনভাবে উপস্থাপন করতে হবে, যাতে সেগুলি ব্যবহার করে পণ্যটির জন্য একটি আকর্ষণীয় ও বিক্রয়-উপযোগী প্রোমোশনাল ভিজ্যুয়াল তৈরি করা যায়।
+
+RULE (MANDATORY)
+
+তোমার উত্তর আমি সরাসরি একটি AI Image Generator Prompt-এর Dynamic Input হিসেবে কপি-পেস্ট করব।
+
+তাই উত্তর দেওয়ার সময় নিচের বিষয়গুলি অবশ্যই মেনে চলবে:
+
+- আপলোড করা ফাইলের তথ্যের ভিত্তিতেই উত্তর দেবে।
+- পণ্যের প্রকৃত বৈশিষ্ট্য, অন্তর্ভুক্ত বিষয়, মূল্য এবং উপকারিতার মধ্যে স্পষ্ট পার্থক্য রাখবে।
+- পণ্যের কোনও বৈশিষ্ট্য, সুবিধা, মূল্য বা প্রতিশ্রুতি নিজের থেকে অনুমান করে যোগ করবে না।
+- কোনও তথ্য ফাইলে উল্লেখ না থাকলে সেটি স্পষ্টভাবে জানাবে। অনুমান করে উত্তর দেবে না।
+- অপ্রয়োজনীয় ব্যাখ্যা বা সাধারণ মার্কেটিংয়ের কথা এড়িয়ে নির্দিষ্ট ও তথ্যসমৃদ্ধ উত্তর দেবে।
+- উত্তর এমনভাবে লিখবে, যাতে কোনও অতিরিক্ত সম্পাদনা ছাড়াই সরাসরি অন্য AI প্রম্পটে ব্যবহার করা যায়।
+
+QUESTIONS
+
+1. পণ্যটি কী? এটি কী কাজ করে? এর মধ্যে কী কী অন্তর্ভুক্ত রয়েছে? পণ্যটির প্রকৃত বৈশিষ্ট্য, কার্যকারিতা এবং মূল্য কী?
+
+2. পণ্যটির আদর্শ ক্রেতা কারা? তাঁদের প্রধান প্রয়োজন, সমস্যা এবং অগ্রাধিকার কী? পণ্যটির কোন কোন বৈশিষ্ট্য ও উপকারিতা তাঁদের কাছে সবচেয়ে আকর্ষণীয় বা মূল্যবান হতে পারে?</div>
+
+        <button class="btn copy-btn" onclick="copyText('prompt1', this)">
+          <span>Copy Prompt #1</span>
+        </button>
+
+      </div>
+
+
+      <!-- Prompt 2 -->
+
+      <div class="step-card">
+
+        <div class="step-header">
+          <span class="step-label">Prompt #2</span>
+        </div>
+
+        <div class="prompt-content" id="prompt2">আগের বিশ্লেষণে পাওয়া পণ্যের তথ্য এবং বৈশিষ্ট্যগুলি ব্যবহার করে এই ডিজিটাল প্রোডাক্টের জন্য একটি আকর্ষণীয়, প্রিমিয়াম-লুকিং 3D Product Cover (Square, 1:1 aspect ratio) তৈরি করার উপযোগী একটি বিস্তারিত AI Image Generation Prompt লিখে দাও।
+
+কভার ডিজাইনটি যেন পণ্যের প্রকৃত বিষয়বস্তু, মূল্য এবং সম্ভাব্য ক্রেতাদের কাছে এর আকর্ষণীয় দিকগুলি যথাযথভাবে তুলে ধরে।
+
+পণ্যের নাম, প্রাসঙ্গিক টেক্সট এবং ডিজাইন যেন পরস্পরের সঙ্গে সামঞ্জস্যপূর্ণ হয়। পণ্যের প্রকৃত তথ্যের বাইরে কোনও দাবি, বৈশিষ্ট্য বা প্রতিশ্রুতি যোগ করবে না।
+
+শুধুমাত্র চূড়ান্ত Image Generation Prompt-টি একটি Code Block-এ দেবে। কোনও ব্যাখ্যা, বিকল্প বা অতিরিক্ত মন্তব্য দেবে না।</div>
+
+        <button class="btn copy-btn" onclick="copyText('prompt2', this)">
+          <span>Copy Prompt #2</span>
+        </button>
+
+      </div>
+
+    </div>
+
+    <footer class="footer">
+      <p>Copyright &copy; <script>document.write(new Date().getFullYear())</script> Siva Prasad Mukherjee. All Rights Reserved.</p>
+    </footer>
+
+  </div>
+
+  <script>
+
+    function copyText(id, btn) {
+
+      const promptElement = document.getElementById(id);
+      const text = promptElement.innerText;
+
+      navigator.clipboard.writeText(text).then(() => {
+
+        const originalText = btn.innerHTML;
+
+        btn.innerHTML = '<span>Copied to Clipboard!</span>';
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+
+          btn.innerHTML = originalText;
+          btn.classList.remove('copied');
+
+        }, 2000);
+
+      }).catch(() => {
+
+        const textarea = document.createElement('textarea');
+
+        textarea.value = text;
+        document.body.appendChild(textarea);
+
+        textarea.select();
+        document.execCommand('copy');
+
+        document.body.removeChild(textarea);
+
+        const originalText = btn.innerHTML;
+
+        btn.innerHTML = '<span>Copied to Clipboard!</span>';
+        btn.classList.add('copied');
+
+        setTimeout(() => {
+
+          btn.innerHTML = originalText;
+          btn.classList.remove('copied');
+
+        }, 2000);
+
+      });
+
+    }
+
+  </script>
+
+</body>
+</html>
