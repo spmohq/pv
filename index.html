@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#14243a">
+<title>Product Visual Creation System™ | Corporate Prompt Studio</title>
+<link rel="icon" href="spm.ico">
+<style>
+
+:root{
+ --navy:#14243a;--navy2:#203852;--navy3:#2d4962;--gold:#c9a96e;--gold2:#e6d1a5;
+ --ink:#1d2937;--muted:#6d7886;--paper:#f1f3f6;--card:#ffffff;--line:#e1e5eb;
+ --soft:#f5f7fa;--shadow:0 18px 48px rgba(20,36,58,.09);--shadow-soft:0 8px 24px rgba(20,36,58,.06);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:linear-gradient(180deg,#f5f6f8 0%,#edf0f4 100%);color:var(--ink);font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.58}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.shell{max-width:1180px;margin:auto;padding:28px 20px 60px}
+.hero{
+ background:linear-gradient(118deg,#101f33 0%,#1b3049 52%,#2b455e 100%);
+ color:#fff;border:1px solid rgba(230,209,165,.25);border-radius:26px;padding:38px 40px;
+ position:relative;overflow:hidden;box-shadow:0 22px 55px rgba(15,31,51,.2)
+}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 20%,rgba(255,255,255,.055) 48%,transparent 70%);pointer-events:none}
+.hero:after{content:"";position:absolute;width:360px;height:360px;border:1px solid rgba(230,209,165,.25);border-radius:50%;right:-100px;top:-190px;box-shadow:0 0 0 30px rgba(230,209,165,.035),0 0 0 68px rgba(255,255,255,.025),inset 0 0 55px rgba(230,209,165,.04);pointer-events:none}
+.eyebrow{color:var(--gold2);text-transform:uppercase;letter-spacing:.2em;font-size:.7rem;font-weight:800}
+.hero h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;letter-spacing:-.035em;line-height:1.03;font-size:clamp(2.2rem,5vw,3.8rem);max-width:780px;margin:15px 0}
+.hero p{color:#dce4ec;max-width:720px;margin:0;font-size:.98rem}
+.hero .sub{margin-top:20px;color:#e3c98f;font-size:.76rem;letter-spacing:.17em;font-weight:750}
+.progress-wrap{margin:25px 0 20px}
+.progress-label{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem;margin-bottom:9px;font-weight:650}
+.progress{height:6px;background:#dfe4eb;border-radius:20px;overflow:hidden}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,#ad8a4f,#e1c98e);width:0;transition:width .2s;border-radius:20px}
+.layout{display:grid;grid-template-columns:310px minmax(0,1fr);gap:22px;align-items:start}
+.panel{background:rgba(255,255,255,.96);border:1px solid rgba(218,224,232,.95);border-radius:20px;box-shadow:var(--shadow-soft)}
+.sidebar{padding:20px;position:sticky;top:16px}
+.section-kicker{font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:#8993a0;font-weight:850;margin:2px 0 14px}
+.mode-list{display:grid;gap:7px}
+.mode{border:1px solid transparent;background:transparent;text-align:left;padding:12px 11px;border-radius:12px;display:flex;gap:11px;align-items:flex-start;color:var(--ink);width:100%;transition:background .18s,border-color .18s,transform .18s}
+.mode:hover{background:#f5f7fa;border-color:#e7ebf0;transform:translateX(2px)}
+.mode.active{background:linear-gradient(110deg,#edf1f6,#f8f7f3);border-color:#d9d4c8;box-shadow:inset 3px 0 0 var(--gold)}
+.num{width:29px;height:29px;flex:none;border-radius:9px;background:#edf0f4;color:var(--navy);display:grid;place-items:center;font-size:.72rem;font-weight:850;border:1px solid #e3e7ed}
+.mode.active .num{background:linear-gradient(145deg,#243b55,#14243a);color:#f1dba9;border-color:#324b65}
+.mode strong{display:block;font-size:.84rem;line-height:1.32;font-weight:780}
+.mode small{display:block;color:#7b8693;font-size:.72rem;margin-top:4px}
+.content{padding:30px}
+.content h2{font-family:Georgia,"Times New Roman",serif;font-size:2rem;letter-spacing:-.025em;font-weight:400;margin:0 0 5px;color:var(--navy)}
+.intro{color:var(--muted);margin:0 0 24px;font-size:.92rem;max-width:760px}
+.tag{display:inline-flex;background:linear-gradient(110deg,#f5efdf,#fbf8f0);border:1px solid #eadfc7;color:#80663a;border-radius:30px;padding:5px 11px;font-size:.66rem;font-weight:850;letter-spacing:.1em;margin-bottom:12px}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}
+.field{display:flex;flex-direction:column;gap:7px}
+.field.full{grid-column:1/-1}
+label{font-size:.81rem;font-weight:780;color:#344255}
+.hint{font-size:.74rem;color:var(--muted);margin-top:-3px}
+input,textarea,select{width:100%;border:1px solid #dce2e9;border-radius:11px;background:#fbfcfd;padding:12px 13px;color:var(--ink);outline:none;transition:border-color .18s,box-shadow .18s,background .18s}
+input:focus,textarea:focus,select:focus{border-color:#9c865b;box-shadow:0 0 0 3px rgba(201,169,110,.15);background:#fff}
+textarea{min-height:96px;resize:vertical}
+.filebox{border:1.5px dashed #c8d0da;border-radius:12px;padding:14px;background:linear-gradient(145deg,#fbfcfd,#f5f7f9)}
+.filebox input{border:0;padding:5px 0;background:transparent}
+.file-status{font-size:.74rem;color:var(--muted);margin-top:5px}
+.checkline{display:flex;align-items:flex-start;gap:9px;font-size:.83rem;color:var(--muted)}
+.checkline input{width:auto;margin-top:5px}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}
+.btn{border:1px solid #182d45;background:linear-gradient(135deg,#263f59,#14243a);color:#fff;padding:12px 18px;border-radius:11px;font-weight:760;font-size:.83rem;letter-spacing:.01em;box-shadow:0 5px 13px rgba(20,36,58,.14);transition:transform .18s,box-shadow .18s,filter .18s}
+.btn:hover{filter:brightness(1.09);transform:translateY(-1px);box-shadow:0 8px 18px rgba(20,36,58,.18)}
+.btn.secondary{background:#fff;color:var(--navy);border-color:#d5dce5;box-shadow:none}
+.btn.secondary:hover{background:#f6f8fa}
+.btn.gold{background:linear-gradient(135deg,#e9d7ae,#c7a66a);border-color:#c4a365;color:#253348}
+.btn:focus-visible{outline:3px solid #d4b777;outline-offset:3px}
+.output{margin-top:25px;border-top:1px solid var(--line);padding-top:22px}
+.output-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.output h3{margin:0;font-size:1rem;color:var(--navy);letter-spacing:.01em}
+.output textarea{min-height:340px;margin-top:13px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.77rem;line-height:1.6;background:#f8fafc;border-color:#dce3eb}
+.notice{padding:14px 16px;background:linear-gradient(110deg,#f7f3e9,#fbfaf6);border:1px solid #e9dfc9;border-left:3px solid var(--gold);border-radius:11px;color:#665638;font-size:.79rem;margin:20px 0 0}
+.footer{text-align:center;color:#8993a0;font-size:.72rem;margin:25px 0 0;letter-spacing:.06em}
+.hidden{display:none!important}
+@media(max-width:800px){.layout{grid-template-columns:1fr}.sidebar{position:static}.mode-list{grid-template-columns:1fr 1fr}.content{padding:23px}.hero{padding:30px 26px}}
+@media(max-width:520px){.shell{padding:12px 11px 35px}.hero{border-radius:19px;padding:25px 20px}.hero h1{font-size:2.35rem}.mode-list{grid-template-columns:1fr}.field-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.content{padding:18px}.actions .btn{flex:1 1 100%}.output-head{align-items:flex-start;flex-direction:column}.output-head .actions{width:100%}.output-head .actions .btn{flex:1}}
+
+
+.help-trigger{margin-top:18px;position:relative;z-index:1;padding:9px 14px;font-size:.78rem}
+.modal-backdrop{position:fixed;inset:0;z-index:1000;background:rgba(10,20,33,.62);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:18px}
+.modal-backdrop.hidden{display:none!important}
+.help-modal{width:min(680px,100%);max-height:min(88vh,820px);overflow:auto;background:#fff;border:1px solid rgba(230,209,165,.55);border-radius:20px;box-shadow:0 28px 90px rgba(0,0,0,.28)}
+.help-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;padding:24px 26px 18px;background:linear-gradient(120deg,#14243a,#2d4962);color:#fff}
+.help-head .eyebrow{font-size:.64rem}
+.help-head h2{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:1.55rem;line-height:1.2;margin:8px 0 0}
+.modal-close{width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.1);color:#fff;font-size:1.5rem;line-height:1}
+.help-body{padding:22px 26px;color:#334155}
+.help-lead{margin:0 0 17px;color:#526071}
+.help-steps{margin:0;padding-left:23px;display:grid;gap:14px}
+.help-steps li{padding-left:4px}
+.help-steps strong{display:block;color:#182b42;font-size:.9rem}
+.help-steps span{display:block;color:#687586;font-size:.83rem;margin-top:3px}
+.help-callout{margin-top:20px;padding:14px 16px;border:1px solid #e8dfcc;border-left:3px solid var(--gold);border-radius:11px;background:#faf7ef;font-size:.82rem}
+.help-callout ul{padding-left:19px;margin:9px 0 0;display:grid;gap:7px}
+.help-callout p{margin:7px 0 0;color:#657182}
+.help-callout.subtle{background:#f5f7fa;border-color:#e1e6ed;border-left-color:#8b9aab}
+.help-foot{padding:0 26px 24px;display:flex;justify-content:flex-end}
+@media(max-width:520px){.modal-backdrop{padding:9px;align-items:flex-end}.help-modal{max-height:92vh;border-radius:18px}.help-head{padding:20px 19px 15px}.help-head h2{font-size:1.3rem}.help-body{padding:18px 19px}.help-foot{padding:0 19px 19px}.help-trigger{width:auto}}
+
+
+/* Responsive layout repair */
+.layout{grid-template-columns:300px minmax(0,1fr);min-width:0}
+.sidebar,.content{min-width:0}
+@media screen and (max-width:900px){
+ .layout{display:flex!important;flex-direction:column!important;gap:16px!important;width:100%}
+ .sidebar,.content{width:100%!important;max-width:none!important;position:static!important}
+ .mode-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media screen and (max-width:560px){
+ .shell{width:100%;max-width:100%;padding:12px 10px 32px}
+ .hero{padding:23px 18px!important;border-radius:17px}
+ .hero h1{font-size:clamp(2rem,9vw,2.5rem)!important}
+ .hero p{font-size:.86rem}
+ .progress-wrap{margin:17px 3px}
+ .layout{gap:13px!important}
+ .sidebar{padding:15px!important;border-radius:15px}
+ .content{padding:17px 15px!important;border-radius:15px}
+ .mode-list{grid-template-columns:1fr 1fr!important;gap:6px}
+ .mode{padding:9px 7px!important;gap:7px!important;min-width:0}
+ .mode strong{font-size:.73rem;overflow-wrap:anywhere}
+ .mode small{font-size:.64rem;line-height:1.25}
+ .num{width:24px;height:24px;font-size:.66rem}
+ .content h2{font-size:1.65rem}
+ .intro{font-size:.84rem;margin-bottom:19px}
+ .field-grid{grid-template-columns:minmax(0,1fr)!important;gap:13px}
+ .field.full{grid-column:1!important}
+ input,textarea,select{font-size:16px!important}
+ textarea{min-height:88px}
+ .actions .btn{flex:1 1 100%}
+ .output-head{align-items:stretch;flex-direction:column}
+ .output-head .actions{display:grid!important;grid-template-columns:1fr 1fr}
+ .output-head .actions .btn{padding:10px 8px;font-size:.76rem}
+}
+
+</style>
+</head>
+<body>
+<div class="shell">
+<header class="hero">
+  <div class="eyebrow">Unified AI Advertising Workspace</div>
+  <h1>Product Visual<br>Creation System™</h1>
+  <p>একটি পণ্য, আটটি বিশেষায়িত ভিজ্যুয়াল কৌশল। প্রয়োজনীয় তথ্য দিন, উপযুক্ত মোড বেছে নিন এবং নিজের ব্যবহারের জন্য সম্পূর্ণ image-generation prompt তৈরি করুন।</p>
+  <div class="sub">MASTER LAUNCHER · 8 SPECIALIZED MODES</div>
+  <button type="button" class="btn gold help-trigger" id="helpOpen" aria-haspopup="dialog" aria-controls="helpModal">How to use this app <span aria-hidden="true">ⓘ</span></button>
+</header>
+
+<div class="progress-wrap">
+  <div class="progress-label"><span>Prompt setup</span><span id="progressText">0% completed</span></div>
+  <div class="progress"><span id="progressBar"></span></div>
+</div>
+
+<div class="layout">
+<aside class="panel sidebar">
+  <div class="section-kicker">Choose a visual mode</div>
+  <div class="mode-list" id="modeList">
+    <button class="mode active" data-mode="xray"><span class="num">01</span><span><strong>Product X-Ray™</strong><small>Reveal hidden product value</small></span></button>
+    <button class="mode" data-mode="before"><span class="num">02</span><span><strong>Product Before & After™</strong><small>Show a truthful contrast</small></span></button>
+    <button class="mode" data-mode="lifestyle"><span class="num">03</span><span><strong>Product Lifestyle / Living Scene™</strong><small>Place product in real life</small></span></button>
+    <button class="mode" data-mode="anatomy"><span class="num">04</span><span><strong>Product Anatomy™</strong><small>Reveal structure and layers</small></span></button>
+    <button class="mode" data-mode="features"><span class="num">05</span><span><strong>Product Feature Breakdown™</strong><small>Explain genuine features</small></span></button>
+    <button class="mode" data-mode="usage"><span class="num">06</span><span><strong>Product Usage Demonstration™</strong><small>Show how it is used</small></span></button>
+    <button class="mode" data-mode="problem"><span class="num">07</span><span><strong>Product Problem-Solution™</strong><small>Connect problem to solution</small></span></button>
+    <button class="mode" data-mode="comparison"><span class="num">08</span><span><strong>Product Comparison™</strong><small>Compare two alternatives</small></span></button>
+  </div>
+</aside>
+
+<main class="panel content">
+  <div class="tag" id="modeTag">MODE 01 · IMAGE PROMPT</div>
+  <h2 id="modeTitle">Product X-Ray™</h2>
+  <p class="intro" id="modeIntro">পণ্যের প্রকৃত বৈশিষ্ট্য, মূল্য এবং ক্রেতার উপকারিতা একটি আকর্ষণীয় ভিজ্যুয়ালে তুলে ধরুন।</p>
+
+  <form id="promptForm">
+    <div class="field-grid">
+      <div class="field full" id="productNameField">
+        <label for="productName">Product name</label>
+        <input id="productName" placeholder="যেমন: AI Study Notes Workbook">
+      </div>
+      <div class="field full" id="productDescField">
+        <label for="productDesc">Product description and genuine capabilities</label>
+        <textarea id="productDesc" placeholder="পণ্যটি কী, কী করে, কী কী অন্তর্ভুক্ত আছে এবং এর প্রকৃত বৈশিষ্ট্য লিখুন।"></textarea>
+      </div>
+      <div class="field full" id="audienceField">
+        <label for="audience">Ideal customer / target audience</label>
+        <textarea id="audience" placeholder="কারা এই পণ্যটি ব্যবহার করবেন? তাঁদের প্রয়োজন বা অগ্রাধিকার কী?"></textarea>
+      </div>
+      <div class="field full" id="problemField">
+        <label for="problem">Customer problem / intended transformation</label>
+        <textarea id="problem" placeholder="কোন বাস্তব সমস্যা, অসুবিধা বা পরিবর্তনটি দেখাতে চান?"></textarea>
+      </div>
+      <div class="field full hidden" id="structureField">
+        <label for="structure">Known structure, components, layers or contents</label>
+        <textarea id="structure" placeholder="শুধু জানা ও যাচাই করা উপাদান, স্তর, অধ্যায়, মডিউল বা interface structure লিখুন।"></textarea>
+      </div>
+      <div class="field full hidden" id="featuresField">
+        <label for="features">Genuine features and customer benefits</label>
+        <textarea id="features" placeholder="প্রকৃত বৈশিষ্ট্য → কী করে → ক্রেতার কী উপকার হয়।"></textarea>
+      </div>
+      <div class="field full hidden" id="usageField">
+        <label for="usage">Actual usage instructions / context</label>
+        <textarea id="usage" placeholder="পণ্যটি কীভাবে এবং কোন পরিস্থিতিতে ব্যবহার করা হয়?"></textarea>
+      </div>
+      <div class="field full hidden" id="comparisonField">
+        <label for="comparison">Comparison criteria and verified differences</label>
+        <textarea id="comparison" placeholder="দুটি পণ্যের তুলনার নির্ভরযোগ্য তথ্য লিখুন। যেমন: features, materials, price, contents, suitability।"></textarea>
+      </div>
+      <div class="field full hidden" id="secondNameField">
+        <label for="secondName">Second product name</label>
+        <input id="secondName" placeholder="দ্বিতীয় পণ্যের নাম">
+      </div>
+      <div class="field full hidden" id="secondDescField">
+        <label for="secondDesc">Second product description</label>
+        <textarea id="secondDesc" placeholder="দ্বিতীয় পণ্যের প্রকৃত বৈশিষ্ট্য ও তথ্য লিখুন।"></textarea>
+      </div>
+      <div class="field">
+        <label for="language">Visual text language</label>
+        <select id="language"><option>English</option><option>বাংলা (কলকাতার স্বাভাবিক বাংলা)</option><option>Hindi</option><option>No text / minimal text</option></select>
+      </div>
+      <div class="field">
+        <label for="aspect">Image aspect ratio</label>
+        <select id="aspect"><option value="4:5 portrait">4:5 · Portrait (default)</option><option value="1:1 square">1:1 · Square</option><option value="16:9 landscape">16:9 · Landscape</option><option value="9:16 vertical">9:16 · Vertical</option></select>
+      </div>
+      <div class="field">
+        <label for="style">Visual direction</label>
+        <select id="style"><option>Premium cinematic commercial advertising</option><option>Minimal luxury editorial</option><option>Photorealistic lifestyle advertising</option><option>Clean modern infographic</option><option>Bold social media advertising</option><option>Let the AI choose the best style</option></select>
+      </div>
+      <div class="field">
+        <label for="platform">Intended platform</label>
+        <select id="platform"><option>General-purpose advertising</option><option>Facebook / Instagram feed</option><option>Instagram Story / Reels cover</option><option>Website / landing page</option><option>WhatsApp promotion</option><option>Print / PDF</option></select>
+      </div>
+      <div class="field full">
+        <label for="extra">Additional instructions (optional)</label>
+        <textarea id="extra" placeholder="কোনও নির্দিষ্ট নির্দেশ থাকলে লিখুন।"></textarea>
+      </div>
+    </div>
+    <div class="notice"><strong>ব্যবহারের নিয়ম:</strong> এখানে ছবি আপলোড করার দরকার নেই। Prompt তৈরি ও Copy করার পর আসল product image সরাসরি ChatGPT-তে attach করুন। বিস্তারিত জানতে উপরের “How to use this app” বাটনে চাপুন।</div>
+    <div class="actions">
+      <button type="button" class="btn" id="generateBtn">Generate prompt</button>
+      <button type="reset" class="btn secondary" id="resetBtn">Reset fields</button>
+    </div>
+  </form>
+
+  <section class="output hidden" id="outputSection">
+    <div class="output-head"><h3>Your ready-to-use prompt</h3><div class="actions" style="margin:0"><button type="button" class="btn" id="copyBtn">Copy prompt</button><button type="button" class="btn secondary" id="downloadBtn">Download .txt</button></div></div>
+    <textarea id="output" spellcheck="false" aria-label="Generated prompt"></textarea>
+    <p class="hint">Prompt-টি সম্পাদনা করে নিতে পারবেন। তারপর ChatGPT-তে product reference image attach করে prompt পাঠান।</p>
+  </section>
+</main>
+</div>
+
+<div class="modal-backdrop hidden" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <section class="help-modal">
+    <div class="help-head">
+      <div>
+        <div class="eyebrow">Quick user guide</div>
+        <h2 id="helpTitle">এই Prompt Generator কীভাবে ব্যবহার করবেন?</h2>
+      </div>
+      <button type="button" class="modal-close" id="helpClose" aria-label="Close help">×</button>
+    </div>
+    <div class="help-body">
+      <p class="help-lead">এই অ্যাপটি আপনার দেওয়া তথ্যের ভিত্তিতে একটি সম্পূর্ণ image-generation prompt তৈরি করে। এটি নিজে ছবি তৈরি করে না এবং এখান থেকে নির্বাচিত ছবি ChatGPT-তে পাঠায় না।</p>
+      <ol class="help-steps">
+        <li><strong>একটি Visual Mode বেছে নিন</strong><span>বাম দিকের তালিকা থেকে Product X-Ray, Lifestyle, Feature Breakdown ইত্যাদির মধ্যে প্রয়োজনীয় পদ্ধতিটি নির্বাচন করুন।</span></li>
+        <li><strong>পণ্যের তথ্য পূরণ করুন</strong><span>Product Name, Description, Ideal Customer এবং নির্বাচিত Mode অনুযায়ী প্রয়োজনীয় তথ্য লিখুন। অজানা তথ্য বানিয়ে লিখবেন না।</span></li>
+        <li><strong>Prompt তৈরি করুন</strong><span>Visual Text Language, Image Ratio, Visual Direction ও Platform নির্বাচন করে Generate Prompt চাপুন।</span></li>
+        <li><strong>Prompt Copy করুন</strong><span>Copy Prompt বাটনে চাপুন। চাইলে Download .txt দিয়ে prompt-টি ফাইল হিসেবেও রাখতে পারবেন।</span></li>
+        <li><strong>ছবি সরাসরি ChatGPT-তে Upload করুন</strong><span>এই HTML পেজে ছবি আপলোড করার প্রয়োজন নেই। ChatGPT-তে নতুন বা বর্তমান চ্যাটে ছবিটি সরাসরি attach করুন, তারপর কপি করা prompt পাঠান।</span></li>
+      </ol>
+      <div class="help-callout">
+        <strong>কোন Mode-এ কোন ছবি দেবেন?</strong>
+        <ul>
+          <li><b>Product X-Ray, Lifestyle, Anatomy, Feature Breakdown, Usage Demonstration, Problem-Solution:</b> আসল পণ্যের ছবি ChatGPT-তে attach করুন।</li>
+          <li><b>Before & After:</b> আগে তৈরি করা finished Product X-Ray image attach করুন।</li>
+          <li><b>Product Comparison:</b> দুটি পণ্যের আসল ছবিই attach করুন।</li>
+        </ul>
+      </div>
+      <div class="help-callout subtle">
+        <strong>মনে রাখবেন</strong>
+        <p>ছবি attach করা এবং prompt পাঠানো—দুটিই ChatGPT-তে আপনাকেই করতে হবে। এই পেজে আপনার লেখা তথ্য browser-এ prompt তৈরির জন্য ব্যবহার হয়; কোনও AI service-এ স্বয়ংক্রিয়ভাবে পাঠানো হয় না।</p>
+      </div>
+    </div>
+    <div class="help-foot"><button type="button" class="btn" id="helpDone">বুঝেছি</button></div>
+  </section>
+</div>
+
+<div class="footer">PRODUCT VISUAL CREATION SYSTEM™ · MASTER LAUNCHER · SINGLE-FILE HTML</div>
+</div>
+
+<script>
+const modes={
+xray:{n:"01",title:"Product X-Ray™",intro:"পণ্যের প্রকৃত বৈশিষ্ট্য, মূল্য এবং ক্রেতার উপকারিতা একটি আকর্ষণীয় ভিজ্যুয়ালে তুলে ধরুন।",fields:["productName","productDesc","audience"],purpose:"Reveal the product's genuine hidden value, features, capabilities, and customer benefits.",plan:"Create one premium product X-Ray visual. Keep the actual product as the visual anchor. Reveal only genuine components, features, resources, or value layers that are supported by the supplied information. Explain the relationship between each genuine feature and its customer benefit. Adapt the visual approach to physical, digital, software, educational, or information products. Do not invent hidden components or functionality.",headline:"PRODUCT X-RAY"},
+before:{n:"02",title:"Product Before & After™",intro:"একটি প্রকৃত পরিবর্তন বা অবস্থার পার্থক্যকে এক ছবিতে Before এবং After হিসেবে দেখান।",fields:["productName","productDesc","audience","problem"],purpose:"Show one meaningful and truthful before-and-after contrast using the supplied finished Product X-Ray image as the primary source.",plan:"Create one split-screen before-and-after advertising visual. LEFT: the genuine starting situation or condition. RIGHT: a realistic improved situation that the product can support. Preserve the product identity and visual source. The contrast must be relevant and plausible. Do not invent outcomes, statistics, testimonials, guarantees, or dramatic transformations. If the product's effect is supportive rather than guaranteed, make that clear.",headline:"BEFORE & AFTER"},
+lifestyle:{n:"03",title:"Product Lifestyle / Living Scene™",intro:"পণ্যটিকে একটি বিশ্বাসযোগ্য বাস্তব পরিবেশে স্বাভাবিকভাবে ব্যবহার বা উপস্থিত থাকতে দেখান।",fields:["productName","productDesc","audience"],purpose:"Place the actual product naturally in a believable real-world lifestyle or usage environment.",plan:"Create one photorealistic, cinematic lifestyle advertising scene. Place the actual product naturally in an environment relevant to the ideal customer. Show believable scale, lighting, context, and interaction where appropriate. Preserve product identity, packaging, logo, proportions, and distinctive details. Avoid forced headlines, callouts, unrelated props, and artificial staging. Default to a text-free visual unless concise text materially improves the result.",headline:"LIVING SCENE"},
+anatomy:{n:"04",title:"Product Anatomy™",intro:"পণ্যের প্রকৃত অংশ, স্তর, উপাদান, interface বা content structure দৃশ্যমানভাবে ব্যাখ্যা করুন।",fields:["productName","productDesc","structure"],purpose:"Reveal the product's genuine structure, components, layers, or organization.",plan:"Create one premium product anatomy visualization using the most suitable technique: exploded view, cutaway, layered composition, labelled components, interface structure, or content architecture. Show only verified components and known information. Use clear callouts and elegant labels. Never invent internal parts, materials, specifications, modules, chapters, or interface elements. Preserve the recognizable product identity.",headline:"PRODUCT ANATOMY"},
+features:{n:"05",title:"Product Feature Breakdown™",intro:"পণ্যের গুরুত্বপূর্ণ বৈশিষ্ট্য, সেগুলি কী করে এবং ক্রেতার কেন কাজে লাগে—তা বোঝান।",fields:["productName","productDesc","audience","features"],purpose:"Explain approximately 4–7 genuine product features and why each matters to the customer.",plan:"Create one product-centred feature breakdown visual. Make the actual product the central visual anchor. Select approximately 4–7 of the most relevant verified features. For each, communicate feature → what it does → customer benefit → why it matters, using concise callouts. Do not fill space with minor features. Do not invent specifications, functionality, resources, or benefits. Keep labels readable and the layout uncluttered.",headline:"FEATURE BREAKDOWN"},
+usage:{n:"06",title:"Product Usage Demonstration™",intro:"পণ্যটি কীভাবে এবং কোন বাস্তব পরিস্থিতিতে ব্যবহার করা হয়, তা একটি দৃশ্যে দেখান।",fields:["productName","productDesc","audience","usage"],purpose:"Demonstrate one accurate, realistic use moment and natural interaction with the actual product.",plan:"Create one realistic premium commercial image showing a clear usage moment. Show a believable user, context, and interaction appropriate to the product. Make the product's role immediately understandable. Preserve its actual design and interface. Follow supplied usage instructions. Do not invent functions, steps, accessories, or unsafe/impossible uses. Avoid clutter and show one coherent action rather than a sequence of unrelated actions.",headline:"USAGE DEMONSTRATION"},
+problem:{n:"07",title:"Product Problem-Solution™",intro:"ক্রেতার একটি বাস্তব সমস্যা এবং পণ্যটি কীভাবে সেটির মোকাবিলায় সাহায্য করে তা দেখান।",fields:["productName","productDesc","audience","problem"],purpose:"Connect one genuine customer problem with the product's actual ability to address it.",plan:"Create one compelling problem-solution advertising visual. Identify ONE primary customer problem that is supported by the supplied information. Show a believable problem scene, the actual product as the solution anchor, how its genuine capability helps, and one realistic customer benefit. Choose a suitable split-screen, product-intervention, visual-flow, or real-life scene composition. Do not exaggerate the problem or imply a guaranteed outcome. If the product only supports part of the solution, represent that honestly.",headline:"PROBLEM → SOLUTION"},
+comparison:{n:"08",title:"Product Comparison™",intro:"দুটি পণ্য বা বিকল্পের মধ্যে যাচাই করা পার্থক্যগুলো ন্যায্যভাবে তুলে ধরুন।",fields:["productName","productDesc","secondName","secondDesc","comparison","audience"],purpose:"Compare two actual products or alternatives using fair, verified, customer-relevant criteria.",plan:"Create one premium comparative advertising visual featuring both actual products. Use approximately 3–6 meaningful comparison criteria supported by supplied information. Apply equivalent criteria fairly. Make each product recognizable and give both balanced visual attention. Explain why differences matter to the target customer. If information is unknown, do not treat it as a weakness; omit it or label it as not specified. Do not invent competitor weaknesses, ratings, prices, performance claims, or a winner. If evidence does not establish a clear winner, end with a neutral customer-oriented takeaway.",headline:"PRODUCT COMPARISON"}
+};
+const $=id=>document.getElementById(id);
+let current="xray";
+const labels={imageA:"Primary product/source image",imageB:"Second product image",productName:"Product name",productDesc:"Product description and genuine capabilities",audience:"Ideal customer / target audience",problem:"Customer problem / intended transformation",structure:"Known structure, components, layers or contents",features:"Genuine features and customer benefits",usage:"Actual usage instructions / context",comparison:"Comparison criteria and verified differences",secondName:"Second product name",secondDesc:"Second product description"};
+function setMode(key){
+ current=key;const m=modes[key];
+ document.querySelectorAll(".mode").forEach(b=>b.classList.toggle("active",b.dataset.mode===key));
+ $("modeTag").textContent=`MODE ${m.n} · IMAGE PROMPT`;$("modeTitle").textContent=m.title;$("modeIntro").textContent=m.intro;
+ const all=["productName","productDesc","audience","problem","structure","features","usage","comparison","secondName","secondDesc"];
+ all.forEach(k=>$(k+"Field").classList.toggle("hidden",!m.fields.includes(k)));
+ $("progressBar").style.width="0%";$("progressText").textContent="0% completed";$("outputSection").classList.add("hidden");
+}
+document.querySelectorAll(".mode").forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.mode)));
+function val(id){return $(id).value.trim()||"Not supplied";}
+function buildPrompt(){
+ const m=modes[current],ratio=$("aspect").value,language=$("language").value,style=$("style").value,platform=$("platform").value;
+ const fields=m.fields;
+ const data=fields.map(k=>`${labels[k]}:\n${val(k)}`).join("\n\n");
+ const imageNote=current==="before"?"SOURCE IMAGE: Upload the finished Product X-Ray image as the primary reference.":current==="comparison"?"SOURCE IMAGES: Upload both actual product images.": "SOURCE IMAGE: Upload the actual product image.";
+ const extra=val("extra")==="Not supplied"?"No additional instructions.":val("extra");
+ const prompt=`ONE-PROMPT ${m.title.toUpperCase()} — PRODUCT VISUAL CREATION SYSTEM
+
+YOUR ROLE
+Act as an elite commercial advertising creative director, product marketing strategist, visual storyteller, and professional AI image-generation director.
+
+YOUR MISSION
+${m.purpose}
+
+SELECTED MODE
+${m.title}
+
+USER-PROVIDED PRODUCT INFORMATION
+${data}
+
+${imageNote}
+
+CREATIVE EXECUTION
+${m.plan}
+
+VISUAL DIRECTION
+Create one polished, premium-quality commercial advertising image.
+Preferred visual direction: ${style}.
+Intended platform: ${platform}.
+Image format: ${ratio}.
+Language for any visible text: ${language}.
+
+Use a clear visual hierarchy, sophisticated composition, appropriate lighting, realistic product presentation, balanced negative space, and readable typography. Adapt the design to the actual product category and the customer's needs. Avoid generic templates, clutter, random decorative elements, and unnecessary text.
+
+PRODUCT IDENTITY PRESERVATION
+Treat uploaded product images as authoritative visual references. Preserve the actual product identity, shape, proportions, branding, logo, colours, packaging, labels, distinctive design, and recognizable interface. Do not redesign, replace, distort, or merge products. If visual styling conflicts with product authenticity, product authenticity takes priority.
+
+TRUTH AND CLAIMS CONTROL
+Never invent product features, specifications, materials, components, functionality, prices, statistics, reviews, testimonials, awards, guarantees, customer results, or competitor weaknesses. Do not present possible outcomes as guaranteed. Do not turn missing information into a negative claim. Use only facts supported by the supplied information. If a point cannot be verified, omit it or qualify it honestly.
+
+TEXT RULES
+Use concise, accurate, customer-focused wording. Make all visible text readable and correctly spelled. Avoid long paragraphs, unsupported superlatives, fake claims, and filler text. If the selected language is "No text / minimal text", prioritize visual storytelling and use only essential labels.
+
+ADDITIONAL USER INSTRUCTIONS
+${extra}
+
+FINAL QUALITY CONTROL
+Before generating, verify that:
+1. The selected mode's purpose is immediately clear.
+2. The actual product is recognizable and accurately represented.
+3. All visible features and claims are supported by the supplied information.
+4. The visual is relevant to the intended customer.
+5. The composition is balanced, premium, and easy to understand.
+6. Text is readable and accurate.
+7. No fabricated functionality, results, or specifications appear.
+
+FINAL OUTPUT
+Generate exactly ONE finished image. Do not provide multiple variations, a collage, or only a written concept. Do not stop at describing the design. Create the actual image now.
+
+${m.headline}
+ONE PRODUCT VISUAL. ONE CLEAR MESSAGE. ONE FINISHED ADVERTISING IMAGE.`;
+ $("output").value=prompt;$("outputSection").classList.remove("hidden");
+ const filled=m.fields.filter(k=>$(k).value.trim()).length;
+ const total=m.fields.length;
+ const pct=Math.round(filled/Math.max(total,1)*100);$("progressBar").style.width=pct+"%";$("progressText").textContent=pct+"% of text fields completed";
+ $("outputSection").scrollIntoView({behavior:"smooth",block:"start"});
+}
+$("generateBtn").addEventListener("click",buildPrompt);
+$("copyBtn").addEventListener("click",async()=>{try{await navigator.clipboard.writeText($("output").value);$("copyBtn").textContent="Copied!";setTimeout(()=>$("copyBtn").textContent="Copy prompt",1600)}catch(e){$("output").select();document.execCommand("copy");$("copyBtn").textContent="Copied!"}});
+$("downloadBtn").addEventListener("click",()=>{const blob=new Blob([$("output").value],{type:"text/plain;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="product-visual-prompt-"+current+".txt";a.click();URL.revokeObjectURL(url)});
+$("resetBtn").addEventListener("click",()=>{setTimeout(()=>{$("outputSection").classList.add("hidden");$("progressBar").style.width="0%";$("progressText").textContent="0% completed"},0)});
+
+const helpModal=$("helpModal"),helpOpen=$("helpOpen"),helpClose=$("helpClose"),helpDone=$("helpDone");
+function openHelp(){helpModal.classList.remove("hidden");document.body.style.overflow="hidden";helpClose.focus()}
+function closeHelp(){helpModal.classList.add("hidden");document.body.style.overflow="";helpOpen.focus()}
+helpOpen.addEventListener("click",openHelp);helpClose.addEventListener("click",closeHelp);helpDone.addEventListener("click",closeHelp);
+helpModal.addEventListener("click",e=>{if(e.target===helpModal)closeHelp()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!helpModal.classList.contains("hidden"))closeHelp()});
+
+setMode("xray");
+</script>
+</body>
+</html>
